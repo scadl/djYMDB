@@ -1,0 +1,205 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+
+    <title>{% block mytitle %}{% endblock %}</title>
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'album.css' %}" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.css' %}" rel="stylesheet">
+
+    <!-- Fontawesome -->
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- This small check wil try to get user's theme, if possible -->
+
+<nav class="navbar {% if uStyle %}{{ uStyle }}{% else %}navbar-dark bg-dark{% endif %}
+    shadow d-flex justify-content-around align-content-center sticky-top ">
+    {% if "navbar-light" in uStyle %}
+        {% static 'site_logo-dk.png' as siteLogo %}
+    {% else %}
+        {% static 'site_logo.png' as siteLogo %}
+    {% endif %}
+
+    <a href="/" class="navbar-brand">
+        <img src="{{ siteLogo }}">
+    </a>
+
+    <div class="d-flex justify-content-center" style="padding-bottom: 5px">
+        {% block myheading %}{% endblock %}
+    </div>
+    <div class="d-flex flex-wrap justify-content-center row btn-group">
+        {% if user.is_authenticated %}
+            {% block subPages %}{% endblock %}
+
+            <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#logoutModal"
+                    title="Сменить пароль"><span class="fas fa-key"></span></button>
+
+            <a href="{% url 'ymdb_logout' %}" class="btn btn-outline-secondary"><span
+                    class="fas fa-sign-out-alt"></span> Выйти</a>
+        {% else %}
+            <a href="{% url 'ymdb_login' %}?next={% url 'ArtList' %}" class="btn btn-outline-secondary"><span
+                    class="fas fa-sign-in-alt"></span> Войти</a>
+        {% endif %}
+    </div>
+
+</nav>
+
+
+<main role="main">
+    {% block mycontent %}{% endblock %}
+    {% if sForm %}
+    <div class="modal fade" tabindex="-2" role="dialog" id="changeSetting" aria-hidden="true">
+        <form class="modal-dialog" role="form" action="{% url 'chSett' %}" method="post">
+            <div class="modal-content">
+                <div class="modal-header font-weight-bold text-primary">Настройки</div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col">{{ sForm.pageStep|as_crispy_field }}</div>
+                        <div class="col">{{ sForm.navTheme|as_crispy_field }}</div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <span class="fas fa-exclamation-triangle"></span>
+                        Будьте внимательны! Фильтры будут <b>сброшены</b>!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Сохранить">
+                    <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    <div class="modal fade" tabindex="-2" role="dialog" id="logoutModal" aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header font-weight-bold text-primary">Новый пароль</div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="uPass">
+                    <hr>
+                    <div class="alert alert-danger text-center">
+                        <span class="fas fa-exclamation-circle"></span>
+                        Внимание, при смене пароля<br>
+                        будет произведен <b>выход</b> из системы,
+                        и <b>сброс</b> фильров.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="btn btn-primary" id="sendPass">Сохранить</span>
+                    <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-3" role="dialog" id="mSearch" aria-hidden="true">
+        <form class="modal-dialog" role="form" action="{% url 'ArtList' %}" method="post">
+            <div class="modal-content">
+                <div class="modal-header font-weight-bold text-primary">Поиск (Загловок, Подзаголовок)</div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col"><input class="form-control" type="text" name="kw" value="{{ kWord }}"></div>
+                    </div>
+                    <hr>
+                    <div class="alert alert-warning">
+                        <span class="fas fa-exclamation-triangle"></span>
+                        Будьте внимательны! Фильтры будут <b>сброшены</b>!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Искать">
+                    <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer class="text-muted">
+    <div class="container" style="margin: 0px 15px;">
+        <p class="float-right">
+            <a href="#">&uparrow; НАВЕРХ &uparrow;</a>
+        </p>
+        <span class="small">
+            <span class="small">
+        <p>Создано <a href="https://scadsdnd.net/" target="_blank">SCAD's Design & Develop</a>.</p>
+        <p>Stylized with <a href="https://getbootstrap.com/" target="_blank">Bootstrap</a> & <a
+                href="https://fontawesome.com/" target="_blank">FontAwesome</a>.</p>
+        <p>Powered by <a href="https://www.djangoproject.com/" target="_blank">Django</a>.</p>
+                </span>
+        </span>
+    </div>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'bootstrap/js/jquery-3.3.1.min.js' %}"></script>
+<script>window.jQuery || document.write('<script src="{% static 'bootstrap/js/jquery-slim.min.js' %}"><\/script>')</script>
+
+<script src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+<script src="{% static 'bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.ru.js' %}"></script>
+
+<script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'bootstrap/js/holder.min.js' %}"></script>
+
+<script type="text/javascript">
+
+    // Ajax Handler for modal
+    $('#logoutModal').on('show.bs.modal', function (evt) {
+        $('.modal-footer #sendPass').click(function () {
+            $.ajax({
+                url: '{% url 'async_chpass' %}',
+                data: {
+                    upass: $('.modal-body #uPass').val(),
+                    uname: '{{ user.username }}'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    // response handler here with data.vars
+                    $('#logoutModal').modal('hide');
+                    window.location = "/"
+                }
+            })
+        });
+    });
+
+
+    $('#id_ArtModified').datetimepicker({
+        format: "dd.mm.yyyy hh:ii:ss",
+        todayBtn: true,
+        todayHighlight: true
+    });
+
+
+    // This small block will loop through associative massive, provided by block,
+    // and extract icon classes corresponding to crispy form field name label.
+    var formIcons = new Array();
+    {% block formIconsJS %}{% endblock %}
+    $('label.col-form-label').each(function () {
+        fName = $(this).attr('for');
+        $(this).html('<span class="' + formIcons[fName] + '" style="padding-right: 5px"></span>' + $(this).html());
+    });
+</script>
+</body>
+</html>

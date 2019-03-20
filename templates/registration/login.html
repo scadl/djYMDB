@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+
+{% block mytitle %}
+    YMDB - Login
+{% endblock %}
+{% block myheading %}
+    <h2 class="navbar-text">Авторизация</h2>
+{% endblock %}
+
+{% block mycontent %}
+    <div class="d-flex justify-content-center" style="margin-right: 15px">
+    <form action="{% url 'ymdb_login' %}" method="post" accept-charset="UTF-8">
+    {{ form|crispy }}
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" class="col-8">
+    <p class="d-flex">
+        <input class="btn btn-secondary flex-fill" type="submit" value="Войти">
+    </p>
+    </form>
+    </div>
+{% endblock %}

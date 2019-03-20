@@ -1,0 +1,15 @@
+{
+  "short_name": "YMDB",
+  "name": "YMDB [NEXT]",
+  "icons": [
+    {
+      "src": "/static/site_icon.png",
+      "type": "image/png",
+      "sizes": "96x96 192x192 512x512"
+    }
+  ],
+  "start_url": "./../",
+  "background_color": "#343a40",
+  "display": "standalone",
+  "theme_color": "#343a40"
+}
