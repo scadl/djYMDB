@@ -82,13 +82,6 @@
                         {% if artDesc.ArtSubTitle %} {{ artDesc.ArtSubTitle|linebreaksbr }} {% endif %}
                     </h6>
                     <p class="card-text small">
-                        {% if artDesc.UserComment %}
-                            <div class="d-flex justify-content-center">
-                                <button type="button" class="badge badge-light" data-toggle="modal"
-                                        data-target="#fullComment_{{ artDesc.pk }}">Комментарий
-                                </button>
-                            </div>
-                        {% endif %}
                     <div class="modal fade" id="fullComment_{{ artDesc.pk }}" tabindex="-1" role="dialog"
                          aria-labelledby="fullCommentLbl" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -145,13 +138,16 @@
                                         </div>
                                     </div>
                                 {% endfor %}
+                                {% if artDesc.guesttestimonilas_set.all|length == 0 %}
+                                    <div class="text-muted font-italic text-center">- Пока нет отзывов -</div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body text-sm-center btn-group d-flex" style="padding: 0px">
-                    <button type="button" class="btn btn-light btn-sm flex-fill rounded-0" data-toggle="modal"
-                            data-target="#fullComment_{{ artDesc.pk }}">Коммент.
+                    <button type="button" class="btn btn-light btn-sm flex-fill rounded-0 {% if artDesc.UserComment == '' %}disabled{% endif %}"
+                            {% if artDesc.UserComment != '' %}data-toggle="modal" data-target="#fullComment_{{ artDesc.pk }}"{% endif %}>Коммент.
                     </button>
                     <div class="btn-outline-secondary btn-sm disabled font-weight-bold flex-fill"
                          id="tsNM_{{ artDesc.pk }}">

@@ -225,9 +225,12 @@
                     aIdent: pkActive
                 },
                 dataType: 'json',
+                beforeSend: function(){
+                    $('#testimonialModal').modal('hide');
+                },
                 success: function (data) {
                     // response handler here with data.vars
-                    $('#testimonialModal').modal('hide');
+
                     var nmV = Number($('#tsNM_' + pkActive).text()) + 1
                     $('#tsNM_' + pkActive).text(nmV);
                 }
