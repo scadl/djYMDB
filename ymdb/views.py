@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
 
-from .models import ArtObject, Collections, GenerTag, sysSettings
+from .models import ArtObject, Collections, GenerTag, sysSettings, guestTestimonilas
 from .forms import ArtForm, CollectionForm, GenerTagForm, FormSettings
 
 # Create your views here.
@@ -47,7 +47,7 @@ def arts_list(req, gid=-1, cid=-1, pg=0):
         nfArts = ArtObject.objects.all()
 
     #print(pageStep, ':',  pg*pageStep)
-    print(req.POST.get('kw', None))
+    #print(req.POST.get('kw', None))
 
     VContext = {'artsList': allArts,
                 'collsList': allCollect,
@@ -191,4 +191,24 @@ def chSettings(req):
     if uSetForm.is_valid:
         uSetForm.save()
         return redirect('ArtList')
+
+def sendTs(req):
+    aTg = ArtObject.objects.get(pk=req.GET.get('aIdent', int))
+    newTs = guestTestimonilas.objects.create(ArtBind=aTg)
+    newTs.tsName = req.GET.get('gName', None)
+    newTs.tsText = req.GET.get('gText', None)
+    if req.GET.get('uName', None) != '':
+        newTs.isAdmin = 1
+    newTs.save()
+
+    data = {'vars': 0}
+    return JsonResponse(data)
+
+def delTS(req):
+    tsWork = guestTestimonilas.objects.get(pk=req.GET.get('aIdent', int))
+    tsWork.delete()
+
+    data = {'vars': 0}
+    return JsonResponse(data)
+
 

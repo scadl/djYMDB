@@ -37,5 +37,7 @@ urlpatterns = [
     path('accounts/login/', views.LoginView.as_view(), name='ymdb_login'),
     path('accounts/logout/', views.LogoutView.as_view(next_page=reverse_lazy('ArtList')), name='ymdb_logout'),
     path('newpass', myViews.chpass, name='async_chpass'),
-    path('newsetts', myViews.chSettings, name='chSett')
+    path('newsetts', myViews.chSettings, name='chSett'),
+    path('newts', myViews.sendTs, name='async_tsSend'),
+    path('tsDel', myViews.delTS, name='async_tsDel')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

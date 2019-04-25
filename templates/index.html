@@ -46,6 +46,9 @@
         {% block myheading %}{% endblock %}
     </div>
     <div class="d-flex flex-wrap justify-content-center row btn-group">
+        <button class="btn btn-outline-info" data-toggle="modal" data-target="#mSearch" title="Поиск">
+            <span class="fas fa-search"></span>
+        </button>
         {% if user.is_authenticated %}
             {% block subPages %}{% endblock %}
 
@@ -66,28 +69,28 @@
 <main role="main">
     {% block mycontent %}{% endblock %}
     {% if sForm %}
-    <div class="modal fade" tabindex="-2" role="dialog" id="changeSetting" aria-hidden="true">
-        <form class="modal-dialog" role="form" action="{% url 'chSett' %}" method="post">
-            <div class="modal-content">
-                <div class="modal-header font-weight-bold text-primary">Настройки</div>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col">{{ sForm.pageStep|as_crispy_field }}</div>
-                        <div class="col">{{ sForm.navTheme|as_crispy_field }}</div>
+        <div class="modal fade" tabindex="-2" role="dialog" id="changeSetting" aria-hidden="true">
+            <form class="modal-dialog" role="form" action="{% url 'chSett' %}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header font-weight-bold text-primary">Настройки</div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">{{ sForm.pageStep|as_crispy_field }}</div>
+                            <div class="col">{{ sForm.navTheme|as_crispy_field }}</div>
+                        </div>
+                        <div class="alert alert-warning">
+                            <span class="fas fa-exclamation-triangle"></span>
+                            Будьте внимательны! Фильтры будут <b>сброшены</b>!
+                        </div>
                     </div>
-                    <div class="alert alert-warning">
-                        <span class="fas fa-exclamation-triangle"></span>
-                        Будьте внимательны! Фильтры будут <b>сброшены</b>!
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Сохранить">
+                        <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="Сохранить">
-                    <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
-                </div>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
     {% endif %}
     <div class="modal fade" tabindex="-2" role="dialog" id="logoutModal" aria-hidden="true">
         <div class="modal-dialog" role="form">
@@ -111,7 +114,7 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-3" role="dialog" id="mSearch" aria-hidden="true">
-        <form class="modal-dialog" role="form" action="{% url 'ArtList' %}" method="post">
+        <form class="modal-dialog" role="form" action="{% url 'ArtList' %}" method="post" target="_blank">
             <div class="modal-content">
                 <div class="modal-header font-weight-bold text-primary">Поиск (Загловок, Подзаголовок)</div>
                 <div class="modal-body">
@@ -131,6 +134,28 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div class="modal fade" tabindex="-2" role="dialog" id="testimonialModal" aria-hidden="true">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header font-weight-bold text-primary">Новый отзыв о произвдении</div>
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="gName" class="col-form-label">Ваше ник:</label>
+                        <input type="text" class="form-control" id="gName" value="{{ user.username }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="gText" class="col-form-label">Ваше сообщение</label>
+                        <textarea class="form-control" id="gText"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="btn btn-primary" id="sendTsMsg">Отправить</span>
+                    <span class="btn btn-secondary" data-dismiss="modal">Отмана</span>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -165,7 +190,7 @@
 
 <script type="text/javascript">
 
-    // Ajax Handler for modal
+    // Ajax Handler for modalLogout
     $('#logoutModal').on('show.bs.modal', function (evt) {
         $('.modal-footer #sendPass').click(function () {
             $.ajax({
@@ -182,6 +207,49 @@
                 }
             })
         });
+    });
+    //
+    var pkActive = 0;
+    $('[id^="tsList_"]').on('show.bs.modal', function (evt) {
+        pkActive = $(this).attr('id').split('_')[1];
+    });
+    // Ajax Handler for modalTestimonial
+    $('#testimonialModal').on('show.bs.modal', function (evt) {
+        $('.modal-footer #sendTsMsg').click(function () {
+            $.ajax({
+                url: '{% url 'async_tsSend' %}',
+                data: {
+                    gName: $('.modal-body #gName').val(),
+                    gText: $('.modal-body #gText').val(),
+                    uName: '{{ user.username }}',
+                    aIdent: pkActive
+                },
+                dataType: 'json',
+                success: function (data) {
+                    // response handler here with data.vars
+                    $('#testimonialModal').modal('hide');
+                    var nmV = Number($('#tsNM_' + pkActive).text()) + 1
+                    $('#tsNM_' + pkActive).text(nmV);
+                }
+            })
+        });
+    });
+    // Ajax delTestimonial
+    $('.tsDelBtn').click(function () {
+        pkATS = $(this).attr('tsAID');
+        $.ajax({
+            url: '{% url 'async_tsDel' %}',
+            data: {
+                aIdent: pkATS
+            },
+            dataType: 'json',
+            success: function (data) {
+                // response handler here with data.vars
+                $('#tsLN_'+pkATS).hide();
+                var nmV = Number($('#tsNM_' + pkActive).text()) - 1
+                $('#tsNM_' + pkActive).text(nmV);
+            }
+        })
     });
 
 

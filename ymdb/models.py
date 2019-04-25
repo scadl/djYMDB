@@ -39,6 +39,7 @@ def update_filename(instance, filename):
 @python_2_unicode_compatible
 class ArtObject(models.Model):
     ART_STATUSES = (
+        (-1, 'Без оценки'),
         (0, 'Буду смотреть'),
         (5, 'Отлично'),
         (4, 'Хорошо'),
@@ -49,7 +50,7 @@ class ArtObject(models.Model):
     ArtCover = models.URLField(verbose_name='Обложка (ссылка на изображние)', blank=True)
     # This strange ArtCoverCahed.upload_to is used beacause only one possible way to serve images in django - through django.staticfiles
     ArtCoverCahed = models.ImageField(verbose_name='Обложка (*.PNG, *.JPEG)', default='', blank=True, upload_to=update_filename)
-    ExternalLink = models.URLField(verbose_name='Внешнее описание (ссылка)', default='https://www.imdb.com/')
+    ExternalLink = models.URLField(verbose_name='Внешняя ссылка (описание или загрузка)', default='', blank=True)
     ArtTitle = models.CharField('Название', max_length=170)
     ArtSubTitle = models.TextField('Подзаголовок', blank=True, max_length=200)
     UserComment = models.TextField ('Ваш комментарий', blank=True)
@@ -78,3 +79,13 @@ class sysSettings(models.Model):
     theUser = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     pageStep = models.IntegerField(verbose_name='Отбражать по Х карт:', default=0)
     navTheme = models.CharField(verbose_name='Тема тулбара', choices=HEAD_THEMES, default=HEAD_THEMES[0], max_length=200)
+
+class guestTestimonilas(models.Model):
+    ArtBind = models.ForeignKey(ArtObject, on_delete=models.CASCADE)
+    tsName = models.TextField(verbose_name='', blank=True, max_length=100)
+    tsText = models.TextField(verbose_name='', blank=True)
+    tsDate = models.DateTimeField(default=now)
+    isAdmin = models.IntegerField(default=-1)
+
+    def __str__(self):
+        return self.tsName

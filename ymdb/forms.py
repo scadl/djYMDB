@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Textarea, SelectMultiple, RadioSelect, DateTimeInput
-from .models import ArtObject, Collections, GenerTag, sysSettings
+from .models import ArtObject, Collections, GenerTag, sysSettings, guestTestimonilas
 
 
 class ArtForm(ModelForm):
