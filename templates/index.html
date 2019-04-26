@@ -225,8 +225,6 @@
                 var tsList = '';
                 for (var kn = 0; kn < respTS.length; kn++) {
 
-                    console.log(respTS[kn]);
-
                     if (respTS[kn].fields.isAdmin >= 0) {
                         var lblColor = 'text-danger';
                     } else {
@@ -262,7 +260,6 @@
                         },
                         dataType: 'json',
                         success: function (data) {
-                            // response handler here with data.vars
                             $('#tsLN_' + pkATS).hide();
                             var nmV = Number($('#tsNM_' + pkActive).text()) - 1
                             $('#tsNM_' + pkActive).text(nmV);
