@@ -212,6 +212,70 @@
     var pkActive = 0;
     $('[id^="tsList_"]').on('show.bs.modal', function (evt) {
         pkActive = $(this).attr('id').split('_')[1];
+        $.ajax({
+            url: '{% url 'async_tsLoad' %}',
+            data: {
+                aIdent: pkActive
+            },
+            dataType: 'json',
+            success: function (data) {
+                // response handler here with data.vars
+                respTS = JSON.parse(data);
+
+                var tsList = '';
+                for (var kn = 0; kn < respTS.length; kn++) {
+
+                    console.log(respTS[kn]);
+
+                    if (respTS[kn].fields.isAdmin >= 0) {
+                        var lblColor = 'text-danger';
+                    } else {
+                        var lblColor = 'text-primary';
+                    }
+
+                    tsList +=
+                        '<div class="row" id="tsLN_' + respTS[kn].pk + '" style="border-bottom: solid 1px silver">' +
+                        '   <div class="col">' +
+                        '       <span class="' + lblColor + '">' + respTS[kn].fields.tsName + ':</span>' +
+                        '       <br>' +
+                        respTS[kn].fields.tsText +
+                        {% if user.is_authenticated %}
+                            '       <a class="btn btn-sm btn-outline-danger float-right tsDelBtn" tsAID="'+respTS[kn].pk+'">'+
+                            '           <span class="far fa-trash-alt btn-outline-danger"></span>' +
+                            '       </a>'+
+                        {% endif %}
+                        '   <br>' +
+                        '       <span class="text-muted small">' + respTS[kn].fields.tsDate + '</span>' +
+                        '   </div>\n' +
+                        '</div>';
+
+                }
+                $('#tsList_' + pkActive + " .modal-body").html(tsList);
+
+                // Ajax delTestimonial
+                $('.tsDelBtn').click(function () {
+                    pkATS = $(this).attr('tsAID');
+                    $.ajax({
+                        url: '{% url 'async_tsDel' %}',
+                        data: {
+                            aIdent: pkATS
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            // response handler here with data.vars
+                            $('#tsLN_' + pkATS).hide();
+                            var nmV = Number($('#tsNM_' + pkActive).text()) - 1
+                            $('#tsNM_' + pkActive).text(nmV);
+                        }
+                    })
+                });
+
+                if(respTS.length==0){
+                    $('#tsList_' + pkActive + " .modal-body").html('<div class="text-muted font-italic text-center">- Пока нет отзывов -</div>');
+                }
+
+            }
+        })
     });
     // Ajax Handler for modalTestimonial
     $('#testimonialModal').on('show.bs.modal', function (evt) {
@@ -225,7 +289,7 @@
                     aIdent: pkActive
                 },
                 dataType: 'json',
-                beforeSend: function(){
+                beforeSend: function () {
                     $('#testimonialModal').modal('hide');
                 },
                 success: function (data) {
@@ -236,23 +300,6 @@
                 }
             })
         });
-    });
-    // Ajax delTestimonial
-    $('.tsDelBtn').click(function () {
-        pkATS = $(this).attr('tsAID');
-        $.ajax({
-            url: '{% url 'async_tsDel' %}',
-            data: {
-                aIdent: pkATS
-            },
-            dataType: 'json',
-            success: function (data) {
-                // response handler here with data.vars
-                $('#tsLN_'+pkATS).hide();
-                var nmV = Number($('#tsNM_' + pkActive).text()) - 1
-                $('#tsNM_' + pkActive).text(nmV);
-            }
-        })
     });
 
 

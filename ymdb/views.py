@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
+from django.core import serializers
 
 from .models import ArtObject, Collections, GenerTag, sysSettings, guestTestimonilas
 from .forms import ArtForm, CollectionForm, GenerTagForm, FormSettings
@@ -211,4 +212,8 @@ def delTS(req):
     data = {'vars': 0}
     return JsonResponse(data)
 
+def dynaTSLoad(req):
+    tsList = guestTestimonilas.objects.filter(ArtBind=req.GET.get('aIdent', int));
+    tsData = serializers.serialize('json', tsList)
+    return JsonResponse(tsData, content_type='application/json', safe=False)
 

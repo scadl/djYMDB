@@ -39,5 +39,6 @@ urlpatterns = [
     path('newpass', myViews.chpass, name='async_chpass'),
     path('newsetts', myViews.chSettings, name='chSett'),
     path('newts', myViews.sendTs, name='async_tsSend'),
-    path('tsDel', myViews.delTS, name='async_tsDel')
+    path('tsDel', myViews.delTS, name='async_tsDel'),
+    path('getTsList', myViews.dynaTSLoad, name='async_tsLoad')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

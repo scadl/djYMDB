@@ -122,22 +122,6 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                {% for tsItem in artDesc.guesttestimonilas_set.all %}
-                                    <div class="row" id="tsLN_{{ tsItem.pk }}" style="border-bottom: solid 1px silver">
-                                        <div class="col">
-                                            <span class="{% if tsItem.isAdmin >= 0 %}text-danger{% else %}text-primary{% endif %}">{{ tsItem.tsName }}:</span>
-                                            <br>
-                                            {{ tsItem.tsText }}
-                                            {% if user.is_authenticated %}
-                                            <a class="btn btn-sm btn-outline-danger float-right tsDelBtn" tsAID="{{ tsItem.pk }}">
-                                                <span class="far fa-trash-alt text-danger"></span>
-                                            </a>
-                                            {% endif %}
-                                            <br>
-                                            <span class="text-muted small">{{ tsItem.tsDate }}</span>
-                                        </div>
-                                    </div>
-                                {% endfor %}
                                 {% if artDesc.guesttestimonilas_set.all|length == 0 %}
                                     <div class="text-muted font-italic text-center">- Пока нет отзывов -</div>
                                 {% endif %}
