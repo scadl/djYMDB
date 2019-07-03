@@ -2,10 +2,10 @@
 
 {% block mytitle %} [YMDB] {{ sArt.ArtTitle }} {% endblock %}
 {% block myheading %}
-    <span class="row">
+    <span class="row" style="padding-top:5px">
         <a href="/" style="border-radius: 0px"
-           class="col btn btn-outline-primary">
-            <span class="fas fa-level-up-alt fa-flip-horizontal"></span>&nbsp;Назад к катлогу&nbsp;<span class="fas fa-level-up-alt"></span>
+           class="col btn btn-outline-primary rounded">
+            <span class="fas fa-level-up-alt fa-flip-horizontal"></span>&nbsp;Назад&nbsp;<span class="fas fa-level-up-alt"></span>
         </a>
     </span>
 {% endblock %}
@@ -19,19 +19,19 @@
 {% endblock %}
 
 {% block mycontent %}
-    <div class="container" style="margin: 0px 15px; min-width: calc(100% - 30px)">
+    <div class="container" style="margin: 0px 15px; max-width: calc(100% - 30px);">
         <h1 class="text-primary display-4"> {{ sArt.ArtTitle }} </h1>
-        <div class="d-flex flex-row align-items-start">
+        <div class="d-flex flex-row flex-wrap align-items-start justify-content-center">
             {% if sArt.ArtCoverCahed %}
-                <img class="card img-thumbnail rounded" style="min-width: 250px" src="{{ sArt.ArtCoverCahed.url|cut:"ymdb" }}"
+                <img class="card img-thumbnail rounded" style="max-width: 250px;" src="{{ sArt.ArtCoverCahed.url|cut:"ymdb" }}"
                      alt="{{ sArt.ArtTitle }} Cover">
             {% elif sArt.ArtCover %}
-                <img class="card img-thumbnail rounded" src="{{ sArt.ArtCover }}" alt="{{ sArt.ArtTitle }} Cover">
+                <img class="card img-thumbnail rounded" style="max-width: 250px;" src="{{ sArt.ArtCover }}" alt="{{ sArt.ArtTitle }} Cover">
             {% else %}
                 <img class="card img-thumbnail rounded"
                      data-src="holder.js/20px250?theme=thumb&bg=55595c&fg=eceeef&text=Нет Обложки" alt="">
             {% endif %}
-            <div class="lead ml-3">
+            <div class="lead ml-3 flex-fill w-50">
                 {{ sArt.UserComment }}
                 <hr>
                 <div class="text-muted" style="font-size: 15px">
