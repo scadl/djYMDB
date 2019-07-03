@@ -40,5 +40,6 @@ urlpatterns = [
     path('newsetts', myViews.chSettings, name='chSett'),
     path('newts', myViews.sendTs, name='async_tsSend'),
     path('tsDel', myViews.delTS, name='async_tsDel'),
-    path('getTsList', myViews.dynaTSLoad, name='async_tsLoad')
+    path('getTsList', myViews.dynaTSLoad, name='async_tsLoad'),
+    path('artInfo/<int:pk>', myViews.getArtInfo, name='artPage')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

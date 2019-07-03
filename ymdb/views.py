@@ -213,7 +213,11 @@ def delTS(req):
     return JsonResponse(data)
 
 def dynaTSLoad(req):
-    tsList = guestTestimonilas.objects.filter(ArtBind=req.GET.get('aIdent', int));
+    tsList = guestTestimonilas.objects.filter(ArtBind=req.GET.get('aIdent', int))
     tsData = serializers.serialize('json', tsList)
     return JsonResponse(tsData, content_type='application/json', safe=False)
+
+def getArtInfo(req, pk):
+    artData = thisArt = get_object_or_404(ArtObject, pk=pk)
+    return render(req, 'artPage.html', {'sArt':artData, 'shareUri':req.build_absolute_uri()});
 

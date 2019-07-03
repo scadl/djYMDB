@@ -1,0 +1,91 @@
+{% extends 'index.html' %}
+
+{% block mytitle %} [YMDB] {{ sArt.ArtTitle }} {% endblock %}
+{% block myheading %}
+    <span class="row">
+        <a href="/" style="border-radius: 0px"
+           class="col btn btn-outline-primary">
+            <span class="fas fa-level-up-alt fa-flip-horizontal"></span>&nbsp;Назад к катлогу&nbsp;<span class="fas fa-level-up-alt"></span>
+        </a>
+    </span>
+{% endblock %}
+{% block subPages %}{% endblock %}
+{% block hScripts %}
+    <!-- Facebook Crawler parameters -->
+    <meta property="og:url"                content="{{ shareUri }}" />
+    <meta property="og:type"               content="article" />
+    <meta property="og:title"              content="[YMDB] {{ sArt.ArtTitle }}" />
+    <meta property="og:description"        content="{{ sArt.UserComment|truncatewords:100 }}" />
+{% endblock %}
+
+{% block mycontent %}
+    <div class="container" style="margin: 0px 15px; min-width: calc(100% - 30px)">
+        <h1 class="text-primary display-4"> {{ sArt.ArtTitle }} </h1>
+        <div class="d-flex flex-row align-items-start">
+            {% if sArt.ArtCoverCahed %}
+                <img class="card img-thumbnail rounded" style="min-width: 250px" src="{{ sArt.ArtCoverCahed.url|cut:"ymdb" }}"
+                     alt="{{ sArt.ArtTitle }} Cover">
+            {% elif sArt.ArtCover %}
+                <img class="card img-thumbnail rounded" src="{{ sArt.ArtCover }}" alt="{{ sArt.ArtTitle }} Cover">
+            {% else %}
+                <img class="card img-thumbnail rounded"
+                     data-src="holder.js/20px250?theme=thumb&bg=55595c&fg=eceeef&text=Нет Обложки" alt="">
+            {% endif %}
+            <div class="lead ml-3">
+                {{ sArt.UserComment }}
+                <hr>
+                <div class="text-muted" style="font-size: 15px">
+                    {% if sArt.ArtSubTitle %}
+                        <span class="fas fa-star-half-alt"></span> <span class="font-weight-bold"> Альт. названия: </span>
+                        {{ sArt.ArtSubTitle }}
+                    {% endif %}
+                    <br>
+                    <span class="fas fa-tape"></span> <span class="font-weight-bold"> Состав: </span>
+                    {% if sArt.SolidArt %}
+                        {% if sArt.InCollection.SingleLabel != '' %}
+                            <strong> {{ sArt.InCollection.SingleLabel }} </strong>
+                        {% else %}
+                            <strong> Самостоятельное Произвдение </strong>
+                        {% endif %}
+                    {% else %}
+                        {{ sArt.ArtBlocks }} {% if sArt.InCollection != '' %}{{ sArt.InCollection.BlockLabel }}{% else %}Частей{% endif %},
+                        {{ sArt.ArtParts }} {% if sArt.InCollection != '' %}{{ sArt.InCollection.PartLabel }}{% else %}Элементов{% endif %}
+                    {% endif %}
+                    <br>
+                    {% if sArt.ArtGeners.count %}
+                        <span class="fas fa-puzzle-piece"></span> <span class="font-weight-bold"> Жанры: </span>
+                        {% for generTag in sArt.ArtGeners.all %}
+                            {{ generTag.name }},
+                        {% endfor %}
+                    {% endif %}
+                    <br>
+                    {% if sArt.UserRating >= 0 %}
+                        <span class="fas fa-star-half-alt"></span> <span class="font-weight-bold"> Оценка: </span>
+                        <span class="font-weight-bold rated_{{ sArt.UserRating }}" >
+                        &nbsp;{{ sArt.get_UserRating_display }}&nbsp;
+                        </span>
+                    {% endif %}
+                    <br>
+                    <span class="fas fa-share"></span> <span class="font-weight-bold"> Поделится: </span>
+                    {% if sArt.ArtCoverCahed %}
+                        <a class="badge-secondary rounded" href="https://vk.com/share.php?url={{ shareUri }}&image=https://scadsdnd.net{{ sArt.ArtCoverCahed.url|cut:"ymdb" }}">
+                            &nbsp;<span class="fab fa-vk"></span>
+                        </a>
+                    {% elif sArt.ArtCover %}
+                        <a class="badge-secondary rounded" href="https://vk.com/share.php?url={{ shareUri }}&title=[YMDB] {{ sArt.ArtTitle }}&image={{ sArt.ArtCover }}">
+                            <span class="fab fa-vk"></span>
+                        </a>
+                    {% else %}
+                        <a class="badge-secondary rounded" href="https://vk.com/share.php?url={{ shareUri }}&title=[YMDB] {{ sArt.ArtTitle }}&image=holder.js/20px250?theme=thumb&bg=55595c&fg=eceeef&text=Нет Обложки">
+                            <span class="fab fa-vk"></span>
+                        </a>
+                    {% endif %}
+                    &nbsp;
+                    <a class="badge-secondary rounded" href="https://www.facebook.com/dialog/share?app_id=200490394225919&href={{ shareUri }}&title={{ sArt.ArtTitle }}">
+                        &nbsp; <span class="fab fa-facebook-f"></span> &nbsp;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

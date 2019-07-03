@@ -68,7 +68,7 @@
                     <h5 class="card-title" style="font-size: medium; text-align: center" title="Название">
                         {% if artDesc.ExternalLink != '' %}
                             <a href="{{ artDesc.ExternalLink }}" target="_blank" class="align-self-center"
-                               title="Ссылка на описание или загрузку">
+                               title="Ссылка на внешнее описание или загрузку">
                                 {{ artDesc.ArtTitle }}
                             </a>
                         {% else %}
@@ -81,26 +81,6 @@
                     <h6 class="card-title mb-2 text-muted small " title="Подзаголовк (Перевод)">
                         {% if artDesc.ArtSubTitle %} {{ artDesc.ArtSubTitle|linebreaksbr }} {% endif %}
                     </h6>
-                    <p class="card-text small">
-                    <div class="modal fade" id="fullComment_{{ artDesc.pk }}" tabindex="-1" role="dialog"
-                         aria-labelledby="fullCommentLbl" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="fullCommentLbl">
-                                        {{ artDesc.ArtTitle }}
-                                        {% if artDesc.ArtSubTitle %}
-                                            <div class="text-muted small">{{ artDesc.ArtSubTitle|linebreaksbr }}</div> {% endif %}
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">{{ artDesc.UserComment }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    </p>
 
                 </div>
                 <div class="modal fade" tabindex="-5" role="dialog" id="tsList_{{ artDesc.pk }}" aria-hidden="true">
@@ -130,9 +110,17 @@
                     </div>
                 </div>
                 <div class="card-body text-sm-center btn-group d-flex" style="padding: 0px">
-                    <button type="button" class="btn btn-light btn-sm flex-fill rounded-0 {% if artDesc.UserComment == '' %}disabled{% endif %}"
-                            {% if artDesc.UserComment != '' %}data-toggle="modal" data-target="#fullComment_{{ artDesc.pk }}"{% endif %}>Коммент.
-                    </button>
+                    {% if artDesc.UserComment != '' %}
+                    <a href="{% url 'artPage' artDesc.pk %}"
+                       class="btn btn-light btn-sm flex-fill rounded-0"
+                        title="Прочиать описание/рецезию от автора каталога">
+                            Описание
+                    </a>
+                    {% else %}
+                        <div class="btn btn-light btn-sm flex-fill rounded-0 disabled" title="Пока нет описания/рецензии">
+                            <strike>Описание</strike>
+                        </div>
+                    {% endif %}
                     <div class="btn-outline-secondary btn-sm disabled font-weight-bold flex-fill"
                          id="tsNM_{{ artDesc.pk }}">
                         {{ artDesc.guesttestimonilas_set.all|length }}
@@ -151,21 +139,15 @@
                             {% endif %}
                         {% else %}
                             <div class="row">
-                                <div class="col-6" title="
-
-
-                                        {% if artDesc.InCollection != '' %}{{ artDesc.InCollection.BlockLabel }}:{% else %}Части:{% endif %}">
-                        <span class="text-primary font-weight-bold">
-                            <i class="fas fa-tape"></i> {{ artDesc.ArtBlocks }}
-                        </span>
+                                <div class="col-6" title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.BlockLabel }}:{% else %}Части:{% endif %}">
+                                    <span class="text-primary font-weight-bold">
+                                        <i class="fas fa-tape"></i> {{ artDesc.ArtBlocks }}
+                                    </span>
                                 </div>
-                                <div class="col-6" title="
-
-
-                                        {% if artDesc.InCollection != '' %}{{ artDesc.InCollection.PartLabel }}:{% else %}Элементы:{% endif %}">
-                          <span class="text-primary font-weight-bold">
-                              <span class="fas fa-film"></span> {{ artDesc.ArtParts }}
-                          </span>
+                                <div class="col-6" title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.PartLabel }}:{% else %}Элементы:{% endif %}">
+                                    <span class="text-primary font-weight-bold">
+                                        <span class="fas fa-film"></span> {{ artDesc.ArtParts }}
+                                    </span>
                                 </div>
                             </div>
                         {% endif %}
