@@ -9,6 +9,7 @@ from django.core.files.storage import FileSystemStorage
 @python_2_unicode_compatible
 class GenerTag(models.Model):
     name = models.CharField(max_length=70, unique=True, verbose_name='Название')
+    theUser = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, default=1)
 
     class Meta:
         ordering = ['name']
@@ -23,6 +24,7 @@ class Collections(models.Model):
     PartLabel = models.CharField(max_length=30, default='', verbose_name='Подпись для Элементов')
     SingleLabel = models.CharField(max_length=100, default='', verbose_name='Подпись для Самостоятельного произведения')
     AgoLabel = models.CharField(max_length=70, default='', verbose_name='Подпись для Даты')
+    theUser = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, default=1)
 
     class Meta:
         ordering = ['name']
@@ -61,7 +63,7 @@ class ArtObject(models.Model):
     ArtGeners = models.ManyToManyField(GenerTag, blank=True, verbose_name='Жанры (Тэги)<br><span class="text-muted small">[Сtrl - несколько]</span>')
     InCollection = models.ForeignKey(Collections, blank=False, default=0, on_delete=models.CASCADE, verbose_name='Коллекция')
     ArtModified = models.DateTimeField('Добавлено', default=now)
-
+    theUser = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, default=1)
 
     class Meta:
         ordering = ['-ArtModified']

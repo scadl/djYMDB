@@ -24,6 +24,7 @@ from ymdb import views as myViews
 
 urlpatterns = [
     path('', myViews.arts_list, name='ArtList'),
+    path('u<int:u>', myViews.arts_list, name='ArtList'),
     path('add/<int:refF>',  myViews.art_add, name = 'ArtAdd'),
     path('edit/<int:pk>/<int:rpg>',  myViews.art_edit, name='ArtEdit'),
     path('edit/<int:pk>/<int:refF>/<int:rtg>/<int:rpg>',  myViews.art_edit, name='ArtEditAdv'),
@@ -33,13 +34,17 @@ urlpatterns = [
     path('del/<int:pk>/<int:ref>/<int:refF>/<int:rtg>/<int:rpg>',  myViews.delSomething, name='delActAdv'),
     path('collection/<int:cid>/p<int:pg>',  myViews.arts_list, name='collFilter'),
     path('genre/<int:gid>/p<int:pg>',  myViews.arts_list, name='genFilter'),
+    path('collection/<int:cid>/p<int:pg>/u<int:u>',  myViews.arts_list, name='collFilter'),
+    path('genre/<int:gid>/p<int:pg>/u<int:u>',  myViews.arts_list, name='genFilter'),
     path('p<int:pg>',  myViews.arts_list, name='pageU'),
-    path('accounts/login/', views.LoginView.as_view(), name='ymdb_login'),
-    path('accounts/logout/', views.LogoutView.as_view(next_page=reverse_lazy('ArtList')), name='ymdb_logout'),
+    path('p<int:pg>/u<int:u>',  myViews.arts_list, name='pageU'),
+    path('login', views.LoginView.as_view(), name='ymdb_login'),
+    path('logout', views.LogoutView.as_view(next_page=reverse_lazy('ArtList')), name='ymdb_logout'),
+    path('register', myViews.registerNew, name='ymdb_register'),
     path('newpass', myViews.chpass, name='async_chpass'),
     path('newsetts', myViews.chSettings, name='chSett'),
     path('newts', myViews.sendTs, name='async_tsSend'),
     path('tsDel', myViews.delTS, name='async_tsDel'),
     path('getTsList', myViews.dynaTSLoad, name='async_tsLoad'),
-    path('artInfo/<int:pk>', myViews.getArtInfo, name='artPage')
+    path('artInfo/u<int:u>/<int:pk>', myViews.getArtInfo, name='artPage')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

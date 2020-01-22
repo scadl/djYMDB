@@ -26,3 +26,7 @@ venv/
 
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
+/ymdb/static/covers/
+db_yellika.sqlite3
+db_old.sqlite3
+bkpDB.zip

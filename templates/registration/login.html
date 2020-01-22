@@ -9,14 +9,26 @@
 {% endblock %}
 
 {% block mycontent %}
-    <div class="d-flex justify-content-center" style="margin-right: 15px">
-    <form action="{% url 'ymdb_login' %}" method="post" accept-charset="UTF-8">
-    {{ form|crispy }}
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}" class="col-8">
-    <p class="d-flex">
-        <input class="btn btn-secondary flex-fill" type="submit" value="Войти">
-    </p>
-    </form>
+    <div class="d-flex justify-content-center p-3">
+        <form action="{% if regMode %}{% url 'ymdb_register' %}{% else %}{% url 'ymdb_login' %}{% endif %}" method="post" accept-charset="UTF-8" class="{% if regMode %}w-50{% endif %}">
+            {{ form|crispy }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" class="col-8">
+            {% if regMode %}
+            <div class="p-2 pb-3 text-brake">
+                <div class="text-danger text-bold">Внимание!</div>
+                Регистрируясь в нашей системе, обзательно указывайте реальный E-Mail. Это нужно для того что бы мы могли с вами свзаяться в случае необходимости.
+                Мы сильно ограниченными вычислительными и дисковыми ресурсами сервера, и можем попросить вас загружать други по размеру обложки.
+                Так же мы можем удалить одну или несколько ващих закладок, в случае если их тема не будет вписываться в допустимые рамки открытых руссокязычных сообществ.
+                Благодарим за понимание!
+            </div>
+            {% endif %}
+            <p class="d-flex btn-group">
+                <input class="btn btn-outline-success flex-fill" type="submit" value="{% if regMode %}Зарегистрироваться{% else %}Войти{% endif %}">
+                {% if not regMode %}
+                <a href="{% url 'ymdb_register' %}" class="btn btn-outline-primary flex-fill" type="button">Регистрация...</a>
+                {% endif %}
+            </p>
+        </form>
     </div>
 {% endblock %}

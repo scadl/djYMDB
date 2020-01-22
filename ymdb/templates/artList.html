@@ -35,6 +35,7 @@
 {% endblock %}
 
 {% block mycontent %}
+
     <div class="d-flex flex-wrap justify-content-center">
         {% if kWord != '' %}
             <div class="card shadow-sm bg-light" style="width: 100%">
@@ -111,11 +112,27 @@
                 </div>
                 <div class="card-body text-sm-center btn-group d-flex" style="padding: 0px">
                     {% if artDesc.UserComment != '' %}
-                    <a href="{% url 'artPage' artDesc.pk %}"
-                       class="btn btn-light btn-sm flex-fill rounded-0"
+                    <div
+                       class="btn btn-light btn-sm flex-fill rounded-0" data-toggle="modal" data-target="#brief_info_{{ artDesc.pk }}"
                         title="Прочиать описание/рецезию от автора каталога">
                             Описание
-                    </a>
+                    </div>
+                        <div class="modal fade" tabindex="-2" role="dialog" id="brief_info_{{ artDesc.pk }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header font-weight-bold text-primary">{{ artDesc.ArtTitle }}</div>
+                                    <div class="modal-body text-left">
+                                        {{ artDesc.UserComment }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{% url 'artPage' pk=artDesc.pk u=uk %}" class="btn btn-outline-secondary">
+                                            <span class="fas fa-share-alt"></span>&nbsp;<span class="fas fa-search-plus"></span>
+                                            Поделиться и Увеличить
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
                         <div class="btn btn-light btn-sm flex-fill rounded-0 disabled" title="Пока нет описания/рецензии">
                             <strike>Описание</strike>
@@ -167,10 +184,7 @@
                     {% endif %}
 
                     <li class="list-group-item list-group-item-light text-muted"
-                        title="
-
-
-                                {% if artDesc.InCollection != '' %}{{ artDesc.InCollection.AgoLabel }}:{% else %}Просмотрено:{% endif %}">
+                        title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.AgoLabel }}:{% else %}Просмотрено:{% endif %}">
                         <span class="fas fa-eye"></span>
                         <span class="small"> {{ artDesc.ArtModified|date:'d.m.Y H:i' }} </span>
                     </li>
@@ -220,33 +234,33 @@
             <li class="page-item {% if active <= 0 %} disabled {% endif %}">
                 <a class="page-link" href="{% if active <= 0 %}#{% else %}
       {% if gid != -1 %}
-        {% url 'genFilter' gid=gid pg=active|add:"-1" %}
+        {% url 'genFilter' gid=gid pg=active|add:"-1" u=uk %}
         {% elif cid != -1 %}
-        {% url 'collFilter' cid=cid pg=active|add:"-1" %}
+        {% url 'collFilter' cid=cid pg=active|add:"-1" u=uk %}
         {% else %}
-        {% url 'pageU' pg=active|add:"-1" %}
+        {% url 'pageU' pg=active|add:"-1" u=uk %}
     {% endif %}
     {% endif %}" tabindex="-1">&laquo;</a>
             </li>
             {% for indA in pages %}
                 <li class="page-item {% if indA == active %} active {% endif %}">
                     <a class="page-link" href="{% if gid != -1 %}
-        {% url 'genFilter' gid=gid pg=indA %}
+        {% url 'genFilter' gid=gid pg=indA u=uk %}
         {% elif cid != -1 %}
-        {% url 'collFilter' cid=cid pg=indA %}
+        {% url 'collFilter' cid=cid pg=indA u=uk %}
         {% else %}
-        {% url 'pageU' pg=indA %}
+        {% url 'pageU' pg=indA u=uk %}
     {% endif %}">
                         {{ indA|add:"1" }}</a>
                 </li>
             {% endfor %}
             <li class="page-item {% if active|add:1 >= pages|last|add:1 %} disabled {% endif %}">
                 <a class="page-link" href="{% if gid != -1 %}
-        {% url 'genFilter' gid=gid pg=active|add:"1" %}
+        {% url 'genFilter' gid=gid pg=active|add:"1" u=uk %}
         {% elif cid != -1 %}
-        {% url 'collFilter' cid=cid pg=active|add:"1" %}
+        {% url 'collFilter' cid=cid pg=active|add:"1" u=uk %}
         {% else %}
-        {% url 'pageU' pg=active|add:"1" %}
+        {% url 'pageU' pg=active|add:"1" u=uk %}
     {% endif %}">&raquo;</a>
             </li>
         </ul>

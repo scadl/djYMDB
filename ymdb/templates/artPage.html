@@ -3,7 +3,7 @@
 {% block mytitle %} [YMDB] {{ sArt.ArtTitle }} {% endblock %}
 {% block myheading %}
     <span class="row" style="padding-top:5px">
-        <a href="/" style="border-radius: 0px"
+        <a href="/{% if user.is_authenticated %}u{{ user.pk }}{% else %}{% if uk %}u{{ uk }}{% endif %}{% endif %}" style="border-radius: 0px"
            class="col btn btn-outline-primary rounded">
             <span class="fas fa-level-up-alt fa-flip-horizontal"></span>&nbsp;Назад&nbsp;<span class="fas fa-level-up-alt"></span>
         </a>
