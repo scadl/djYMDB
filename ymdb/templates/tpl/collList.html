@@ -1,0 +1,96 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block mytitle %}YMDB -
+    {% if isColl %}
+        Коллекции
+    {% else %}
+        Жанры
+    {% endif %}
+{% endblock %}
+{% block myheading %}
+    <h2 class=" navbar-text" style="padding: 0px">
+    {% if isColl %}
+        Коллекции
+    {% else %}
+        Жанры
+    {% endif %}
+    </h2>
+{% endblock %}
+
+{% block mycontent %}
+    {% if isColl %}
+        {% url 'ymdb_collect_edit' as action_url %}
+    {% else %}
+        {% url 'ymdb_gener_edit' as action_url %}
+    {% endif %}
+    <div class="d-flex justify-content-center">
+        <div class="col-md-5">
+            <form action="{{ action_url }}" method="post" accept-charset="UTF-8">
+                {{ theForm|crispy }}
+                {% csrf_token %}
+                <p class="d-flex">
+                    <input type="submit" class="btn btn-primary flex-fill"
+                           value="&downarrow; Добавить / Обновить &downarrow;">
+                </p>
+            </form>
+
+            <ul class="list-group">
+                {% for dbItem in AllList %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            <span class="fas fa-{% if isColl %}book{% else %}puzzle-piece{% endif %}"></span>
+                            {{ dbItem.name }}
+                        </span>
+                        <span>
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'propMod' ref=delAct pky=dbItem.pk %}">
+                                <span class="far fa-edit"></span>
+                            </a>
+                        {% if isColl %}
+                            <button class="btn btn-sm btn-outline-danger" data-toggle="modal"
+                                    data-target="#delModal{{ dbItem.pk }}">
+                                <span class="far fa-trash-alt"></span>
+                            </button>
+                        {% else %}
+                            <a class="btn btn-sm btn-outline-danger" href="{% url 'delAct' dbItem.pk delAct 0 %}">
+                                <span class="far fa-trash-alt"></span>
+                            </a>
+                        {% endif %}
+                        </span>
+                    </li>
+                    {% if isColl %}
+                        <div class="modal fade" tabindex="-100" role="dialog" id="delModal{{ dbItem.pk }}"
+                             aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <span class="text-danger font-weight-bold">Осторожно!</span>
+                                    </div>
+                                    <div class="modal-body">
+                                        При удалении коллекци,<br>
+                                        будут удалены все произведния в ней!
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="{% url 'delAct' dbItem.pk delAct 0 %}">Понял, вперёд!</a>
+                                        <span class="btn btn-secondary" data-dismiss="modal">Нет, подождите...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <li class="list-group-item">No items..</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block formIconsJS %}
+    formIcons['id_name'] = 'far fa-image';
+    formIcons['id_BlockLabel'] = 'fas fa-tape';
+    formIcons['id_PartLabel'] = 'fas fa-film';
+    formIcons['id_SingleLabel'] = 'far fa-file';
+    formIcons['id_AgoLabel'] = 'far fa-clock';
+{% endblock %}

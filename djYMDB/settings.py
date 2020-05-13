@@ -28,19 +28,19 @@ DEBUG = True
 
 # Basic django settings for prodaction server
 # https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-#SECURE_HSTS_SECONDS = 3600
-#SECURE_CONTENT_TYPE_NOSNIFF = True
-#SECURE_BROWSER_XSS_FILTER = True
-#SECURE_SSL_REDIRECT = True
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
-#X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 3600
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+X_FRAME_OPTIONS = 'DENY'
 
-#SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-#SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # When DEBUG is True and ALLOWED_HOSTS is empty, the host is validated against
-ALLOWED_HOSTS = ['localhost', '192.168.137.1','127.0.0.1', 'scadsdnd.net']
+ALLOWED_HOSTS = ['localhost', 'scadsdnd.net', 'ymdb.scadsdnd.net', '192.168.137.1','127.0.0.1']
 
 
 # Application definition
@@ -52,8 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'ymdb',
-    'django_cleanup'
+    'ymdb'
 ]
 
 MIDDLEWARE = [
@@ -141,15 +140,17 @@ USE_TZ = True
 #    os.path.join(BASE_DIR, 'static'),
 #)
 
+ALIAS = 'djYMDB/'
+
 # url to CALL static files
-STATIC_URL = '/static/'
+STATIC_URL = '/'+ALIAS+'static/'
 # Path to wher STORE static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # url to CALL uplodaed files
 #MEDIA_URL = '/static/media/'
 # Path to SAVE uploaded files
-MEDIA_ROOT = ''
+MEDIA_ROOT = 'C:/xampp/htdocs/'+ALIAS
 
 # Crispy_Forms Theme
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

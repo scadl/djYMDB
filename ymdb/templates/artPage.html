@@ -3,7 +3,7 @@
 {% block mytitle %} [YMDB] {{ sArt.ArtTitle }} {% endblock %}
 {% block myheading %}
     <span class="row" style="padding-top:5px">
-        <a href="/{% if user.is_authenticated %}u{{ user.pk }}{% else %}{% if uk %}u{{ uk }}{% endif %}{% endif %}" style="border-radius: 0px"
+        <a href="/djYMDB/{% if user.is_authenticated %}u{{ user.pk }}{% else %}{% if uk %}u{{ uk }}{% endif %}{% endif %}" style="border-radius: 0px"
            class="col btn btn-outline-primary rounded">
             <span class="fas fa-level-up-alt fa-flip-horizontal"></span>&nbsp;Назад&nbsp;<span class="fas fa-level-up-alt"></span>
         </a>
@@ -18,12 +18,13 @@
     <meta property="og:description"        content="{{ sArt.UserComment|truncatewords:100 }}" />
 {% endblock %}
 
+{% load static %}
 {% block mycontent %}
     <div class="container" style="margin: 0px 15px; max-width: calc(100% - 30px);">
         <h1 class="text-primary display-4"> {{ sArt.ArtTitle }} </h1>
         <div class="d-flex flex-row flex-wrap align-items-start justify-content-center">
             {% if sArt.ArtCoverCahed %}
-                <img class="card img-thumbnail rounded" style="max-width: 250px;" src="{{ sArt.ArtCoverCahed.url|cut:"ymdb" }}"
+                <img class="card img-thumbnail rounded" style="max-width: 250px;" src="{% static sArt.ArtCoverCahed.url|cut:'ymdb/static' %}"
                      alt="{{ sArt.ArtTitle }} Cover">
             {% elif sArt.ArtCover %}
                 <img class="card img-thumbnail rounded" style="max-width: 250px;" src="{{ sArt.ArtCover }}" alt="{{ sArt.ArtTitle }} Cover">

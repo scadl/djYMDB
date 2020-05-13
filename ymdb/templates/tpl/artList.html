@@ -1,0 +1,207 @@
+{% extends 'index.html' %}
+
+{% block mytitle %} YMDB {% endblock %}
+{% block myheading %}
+    <span class="row">
+    {% for oneCol in collsList %}
+        <a href="{% url 'collFilter' cid=oneCol.pk pg=0 %}" style="border-radius: 0px"
+           class="col btn btn-outline-primary {% if oneCol.pk == cid %}active{% endif %}" >
+            <span class="fas fa-book"></span>&nbsp;
+            {{ oneCol.name }}
+        </a>
+    {% endfor %}
+    </span>
+{% endblock %}
+
+{% block subPages %}
+    <a href="{% if gid != -1 %}
+        {% url 'ArtAdd' refF=1 %}
+    {% elif cid != -1 %}
+        {% url 'ArtAdd' refF=2 %}
+    {% else %}
+        {% url 'ArtAdd' refF=0 %}
+    {% endif %}" class="btn btn-outline-info" title="Добавить">
+        <span class="fas fa-plus-square"></span>
+    </a>
+    <button class="btn btn-outline-info" data-toggle="modal" data-target="#changeSetting" title="Настройки">
+        <span class="fas fa-cogs"></span>
+    </button>
+    <a href="{% url 'propEdit' 1 %}" class="btn btn-outline-success" title="Коллекции">
+    <span class="fas fa-book"></span>
+    </a>
+    <a href="{% url 'propEdit' 2 %}" class="btn btn-outline-success" title="Жанры">
+        <span class="fas fa-puzzle-piece"></span>
+    </a>
+{% endblock %}
+
+{% block mycontent %}
+    <div class="d-flex flex-wrap justify-content-center">
+    {% for artDesc in artsList %}
+              <div class="card shadow-sm align-self-start" style="width: 12rem; margin: 6px">
+              {% if artDesc.ArtCoverCahed %}
+                <img class="card-img-top" src="{{ artDesc.ArtCoverCahed.url|cut:"ymdb" }}" alt="{{ artDesc.ArtTitle }} Cover">
+              {% elif artDesc.ArtCover %}
+                 <img class="card-img-top" src="{{ artDesc.ArtCover }}" alt="{{ artDesc.ArtTitle }} Cover">
+              {% else %}
+                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Нет Обложки" alt="">
+              {% endif %}
+                  <ul class="list-group list-group-flush" title="Моя Оцека">
+                      <li class="list-group-item d-flex justify-content-center font-weight-bold rated_{{ artDesc.UserRating }}">
+                          <span class="fas fa-star-half-alt" style="padding-right: 5px"></span>
+                          {{ artDesc.get_UserRating_display }}
+                      </li>
+                  </ul>
+                <div class="card-body align-content-center" style="padding-bottom:0px">
+                  <h5 class="card-title" style="font-size: medium; text-align: center" title="Название">
+                      <a href="{{ artDesc.ExternalLink }}" target="_blank" class="align-self-center">
+                      {{ artDesc.ArtTitle }}
+                      </a>
+                  </h5>
+                  <h6 class="card-title mb-2 text-muted small " title="Подзаголовк (Перевод)">
+                      {% if artDesc.ArtSubTitle %} {{ artDesc.ArtSubTitle|linebreaksbr }} {% endif %}
+                  </h6>
+                  <p class="card-text small">
+                      {% if artDesc.UserComment %}
+					  <div class="d-flex justify-content-center">
+                          <button type="button" class="badge badge-light" data-toggle="modal" data-target="#fullComment_{{ artDesc.pk }}">Комментарий</button>
+						</div>
+                      {% endif %}
+                      <div class="modal fade" id="fullComment_{{ artDesc.pk }}" tabindex="-1" role="dialog" aria-labelledby="fullCommentLbl" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="fullCommentLbl">
+                                        {{ artDesc.ArtTitle }}
+                                        {% if artDesc.ArtSubTitle %} <div class="text-muted small">{{ artDesc.ArtSubTitle|linebreaksbr }}</div> {% endif %}
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">{{ artDesc.UserComment }}</div>
+                            </div>
+                        </div>
+                    </div>
+                  </p>
+
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item list-group-item-light" title="{{ artDesc.InCollection.SingleLabel }}">
+                      {% if artDesc.SolidArt %}
+                          {% if artDesc.InCollection.SingleLabel != '' %}
+                              <strong> {{ artDesc.InCollection.SingleLabel|truncatechars:16 }} </strong>
+                          {% else %}
+                          <strong> Самостоят. П. </strong>
+                              {% endif %}
+                      {% else %}
+                      <div class="row">
+                      <div class="col-6" title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.BlockLabel }}:{% else %}Части:{% endif %}">
+                        <span class="text-primary font-weight-bold">
+                            <i class="fas fa-tape"></i> {{ artDesc.ArtBlocks }}
+                        </span>
+                      </div>
+                      <div class="col-6" title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.PartLabel }}:{% else %}Элементы:{% endif %}">
+                          <span class="text-primary font-weight-bold">
+                              <span class="fas fa-film" ></span> {{ artDesc.ArtParts }}
+                          </span>
+                      </div>
+                      </div>
+                      {% endif %}
+                  </li>
+                    {% if artDesc.ArtGeners.count %}
+                    <li class="list-group-item list-group-item-light" title="Жанры">
+                        <span class="small d-flex flex-wrap">
+                        {% for generTag in artDesc.ArtGeners.all %}
+                            <a href="{% url 'genFilter' gid=generTag.pk pg=active %}">
+                                <span class="fas fa-puzzle-piece"></span>&nbsp;{{ generTag.name }},&nbsp;
+                            </a>
+                        {% endfor %}
+                        </span>
+                    </li>
+                    {% endif %}
+
+                 <li class="list-group-item list-group-item-light text-muted"
+                     title="{% if artDesc.InCollection != '' %}{{ artDesc.InCollection.AgoLabel }}:{% else %}Просмотрено:{% endif %}">
+                     <span class="fas fa-eye"></span>
+                     <span class="small"> {{ artDesc.ArtModified|date:'d.m.Y H:i' }} </span>
+                 </li>
+
+                {% if user.is_authenticated %}
+                <li class="list-group-item ">
+                  <div class="d-flex justify-content-center align-items-center">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-outline-primary" href="{% if gid != -1 %}
+                        {% url 'ArtEditAdv' pk=artDesc.pk refF=1 rtg=gid rpg=active %}
+                        {% elif cid != -1 %}
+                        {% url 'ArtEditAdv' pk=artDesc.pk refF=2 rtg=cid rpg=active %}
+                        {% else %}
+                        {% url 'ArtEdit' pk=artDesc.pk rpg=active %}
+                        {% endif %}">
+                          <span class="fas fa-edit"></span> Изменить
+                      </a>
+                      <a class="btn btn-sm btn-outline-danger" href="{% if gid != -1 %}
+                        {% url 'delActAdv' pk=artDesc.pk ref=0 refF=1 rtg=gid rpg=active %}
+                        {% elif cid != -1 %}
+                        {% url 'delActAdv' pk=artDesc.pk ref=0 refF=2 rtg=cid rpg=active %}
+                        {% else %}
+                        {% url 'delAct' pk=artDesc.pk ref=0 rpg=active %}
+                        {% endif %}">
+                          <span class="fas fa-trash-alt"></span> Удалить
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                {% endif %}
+
+                </ul>
+              </div>
+
+    {% empty %}
+
+              <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                  <p class="card-text">Нет элементов</p>
+                </div>
+              </div>
+
+    {% endfor %}
+    </div>
+
+    {% if pages|last > 0 %}
+    <ul class="pagination d-flex justify-content-center flex-wrap">
+    <li class="page-item {% if active <= 0 %} disabled {% endif %}">
+      <a class="page-link" href="{% if active <= 0 %}#{% else %}
+      {% if gid != -1 %}
+        {% url 'genFilter' gid=gid pg=active|add:"-1" %}
+        {% elif cid != -1 %}
+        {% url 'collFilter' cid=cid pg=active|add:"-1" %}
+        {% else %}
+        {% url 'pageU' pg=active|add:"-1" %}
+    {% endif %}
+    {% endif %}" tabindex="-1">&laquo;</a>
+    </li>
+    {% for indA in pages %}
+    <li class="page-item {% if indA == active %} active {% endif %}">
+      <a class="page-link" href="{% if gid != -1 %}
+        {% url 'genFilter' gid=gid pg=indA %}
+        {% elif cid != -1 %}
+        {% url 'collFilter' cid=cid pg=indA %}
+        {% else %}
+        {% url 'pageU' pg=indA %}
+    {% endif %}">
+          {{ indA|add:"1" }}</a>
+    </li>
+    {% endfor %}
+    <li class="page-item {% if active|add:1 >= pages|last|add:1 %} disabled {% endif %}">
+      <a class="page-link" href="{% if gid != -1 %}
+        {% url 'genFilter' gid=gid pg=active|add:"1" %}
+        {% elif cid != -1 %}
+        {% url 'collFilter' cid=cid pg=active|add:"1" %}
+        {% else %}
+        {% url 'pageU' pg=active|add:"1" %}
+    {% endif %}">&raquo;</a>
+    </li>
+  </ul>
+    {% endif %}
+
+{% endblock %}

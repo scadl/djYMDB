@@ -40,7 +40,7 @@
         {% static 'site_logo.png' as siteLogo %}
     {% endif %}
 
-    <a href="/{% if user.is_authenticated %}u{{ user.pk }}{% else %}{% if uk %}u{{ uk }}{% endif %}{% endif %}" class="navbar-brand">
+    <a href="/djYMDB/{% if user.is_authenticated %}u{{ user.pk }}{% else %}{% if uk %}u{{ uk }}{% endif %}{% endif %}" class="navbar-brand">
         <img src="{{ siteLogo }}">
     </a>
 
@@ -313,7 +313,7 @@
     // and extract icon classes corresponding to crispy form field name label.
     var formIcons = new Array();
     {% block formIconsJS %}{% endblock %}
-    $('label.col-form-label').each(function () {
+    $('label').each(function () {
         fName = $(this).attr('for');
         $(this).html('<span class="' + formIcons[fName] + '" style="padding-right: 5px"></span>' + $(this).html());
     });

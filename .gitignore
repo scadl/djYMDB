@@ -20,6 +20,7 @@ demoDB.rar
 __mySrc__/
 __pycache__/
 venv/
+venvl/
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
@@ -27,6 +28,7 @@ venv/
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
 /ymdb/static/covers/
-db_yellika.sqlite3
-db_old.sqlite3
+
+# Ignore databases
+*.sqlite3
 bkpDB.zip

@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block mytitle %}
+    YMDB - {% if formMode %}Новое{% else %}Редактирование{% endif %}
+{% endblock %}
+{% block myheading %}
+    <h3 class="navbar-text"  style="padding: 0px">
+        {% if formMode %}Новое{% else %}Редактирование{% endif %}
+    </h3>
+{% endblock %}
+
+{% block mycontent %}
+    <div >
+        {% if formMode %}
+            {% url 'ymdb_art_add' refF=refFS as actionURL %}
+        {% else %}
+            {% url 'ymdb_art_edit' pk=fromData.instance.pk refF=refFS rtg=rtgS rpg=rpgS as actionURL %}
+        {% endif %}
+        <form action="{{ actionURL }}" method="post" accept-charset="UTF-8"
+              class="form-check" enctype="multipart/form-data" style="margin-right: 15px">
+            {% csrf_token %}
+            <div class="row" >
+                <div class="col-md-8 border-right">
+                    {{ formData.ArtCoverCahed|as_crispy_field }}
+                    {{ formData.ArtCover|as_crispy_field }}
+                    {{ formData.ExternalLink|as_crispy_field }}
+                    {{ formData.ArtTitle|as_crispy_field }}
+                    {{ formData.ArtSubTitle|as_crispy_field }}
+                    <div class="border-top"></div>
+                    {{ formData.UserComment|as_crispy_field }}
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            {{ formData.UserRating|as_crispy_field }}
+                            <div class="border-top row"></div>
+                            {{ formData.ArtBlocks|as_crispy_field }}
+                            {{ formData.ArtParts|as_crispy_field }}
+                            <div class="border-top row"></div>
+                            {{ formData.InCollection|as_crispy_field }}
+                            <div class="border-top row"></div>
+                            {{ formData.SolidArt|as_crispy_field }}
+                            <div class="border-top row"></div>
+                            {{ formData.ArtModified|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ formData.ArtGeners|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col d-flex">
+                    <input type="submit" class="btn btn-secondary flex-fill" value="Сохранить">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block formIconsJS %}
+    formIcons['id_ArtCoverCahed'] = 'far fa-image';
+    formIcons['id_ArtCover'] = 'far fa-image';
+    formIcons['id_ExternalLink'] = 'fas fa-globe';
+    formIcons['id_ArtTitle'] = 'fas fa-heading';
+    formIcons['id_ArtSubTitle'] = 'fas fa-subscript';
+    formIcons['id_UserRating_0'] = 'fas fa-star-half-alt';
+    formIcons['id_UserComment'] = 'far fa-comment';
+    formIcons['id_ArtBlocks'] = 'fas fa-tape';
+    formIcons['id_ArtParts'] = 'fas fa-film';
+    formIcons['id_InCollection'] = 'fas fa-book';
+    formIcons['id_ArtGeners'] = 'fas fa-puzzle-piece';
+    formIcons['id_ArtModified'] = 'far fa-clock';
+{% endblock %}

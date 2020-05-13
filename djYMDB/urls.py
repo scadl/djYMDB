@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # from django.contrib import admin
-from django.urls import path, reverse_lazy
+from django.urls import path, reverse_lazy, include
 from django.contrib.auth import views
 
 from django.conf import settings
@@ -48,3 +48,5 @@ urlpatterns = [
     path('getTsList', myViews.dynaTSLoad, name='async_tsLoad'),
     path('artInfo/u<int:u>/<int:pk>', myViews.getArtInfo, name='artPage')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns = [path(settings.ALIAS, include(urlpatterns))]

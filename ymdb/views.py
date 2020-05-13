@@ -121,6 +121,7 @@ def art_add(req, refF=-1):
         myForm = ArtForm() # provide empty form
         # Filter "tags" form element by current user id, avoiding mixing in artObject props
         myForm.fields['ArtGeners'].queryset = GenerTag.objects.filter(theUser=req.user.pk)
+        myForm.fields['InCollection'].queryset = Collections.objects.filter(theUser=req.user.pk)
 
     VContext = {'formData':myForm,
                 'formMode':True,

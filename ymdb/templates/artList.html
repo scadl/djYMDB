@@ -34,6 +34,7 @@
     </a>
 {% endblock %}
 
+{% load static %}
 {% block mycontent %}
 
     <div class="d-flex flex-wrap justify-content-center">
@@ -49,7 +50,7 @@
         {% for artDesc in artsList %}
             <div class="card shadow-sm align-self-start" style="width: 12rem; margin: 6px">
                 {% if artDesc.ArtCoverCahed %}
-                    <img class="card-img-top" src="{{ artDesc.ArtCoverCahed.url|cut:"ymdb" }}"
+                    <img class="card-img-top" src="{% static artDesc.ArtCoverCahed.url|cut:'ymdb/static' %}"
                          alt="{{ artDesc.ArtTitle }} Cover">
                 {% elif artDesc.ArtCover %}
                     <img class="card-img-top" src="{{ artDesc.ArtCover }}" alt="{{ artDesc.ArtTitle }} Cover">
