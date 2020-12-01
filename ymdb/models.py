@@ -8,7 +8,7 @@ from django.core.files.storage import FileSystemStorage
 # Create your models here.
 @python_2_unicode_compatible
 class GenerTag(models.Model):
-    name = models.CharField(max_length=70, unique=True, verbose_name='Название')
+    name = models.CharField(max_length=70, unique=False, verbose_name='Название')
     theUser = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, default=1)
 
     class Meta:
